@@ -34,8 +34,7 @@ if st.sidebar.button("Generate Weekly Plan"):
             plan_days.append(current)
         current += timedelta(days=1)
 
-    # Mighty Minutes numbers
-    mm_numbers = [random.randint(1, 135) for _ in plan_days]  # Realistic range
+    mm_numbers = [random.randint(1, 135) for _ in plan_days]
 
     rows = []
     for i, day in enumerate(plan_days):
@@ -43,35 +42,41 @@ if st.sidebar.button("Generate Weekly Plan"):
         is_off = day in off_dates
         gym = "Ride tricycles" if day.weekday() == 2 else "Obstacle course / Ball skills"
 
-        # Theme-based specific activities
-        math_act = f"Counting & sorting objects related to {theme.lower()}"
-        lang_act = f"Vocabulary building & describing {theme.lower()}"
+        math_act = f"Counting & sorting related to {theme.lower()}"
+        lang_act = f"Vocabulary & describing {theme.lower()}"
 
         if "Balls" in theme:
-            math_act = "Counting balls, comparing sizes, simple addition with balls"
-            lang_act = "Describing how balls move, action words"
+            math_act = "Counting balls, comparing sizes, addition with balls"
+            lang_act = "Action words: roll, throw, bounce"
         elif "Buildings" in theme:
-            math_act = "Counting blocks, making patterns, shapes in buildings"
-            lang_act = "Describing structures, positional words (on, under, next to)"
+            math_act = "Counting blocks, patterns, shapes"
+            lang_act = "Positional words (on, under, tall, short)"
         elif "All About Me" in theme:
             math_act = "Counting body parts, graphing favorites"
             lang_act = "Sharing personal stories, name recognition"
 
         if is_off:
-            row_dict = {col: "NO SCHOOL" for col in ["Circle Time", "Gym", "Story Time", "Mighty Minutes", "Heggerty", "Math Lesson", "Language Lesson"]}
-            row_dict["Day"] = f"{date_str} (NO SCHOOL)"
+            rows.append({
+                "Day": f"{date_str} (NO SCHOOL)",
+                "Circle Time": "NO SCHOOL",
+                "Gym": "NO SCHOOL",
+                "Story Time": "NO SCHOOL",
+                "Mighty Minutes": "NO SCHOOL",
+                "Heggerty": "Daily Lesson",
+                "Math Lesson": "NO SCHOOL",
+                "Language Lesson": "NO SCHOOL"
+            })
         else:
-            row_dict = {
+            rows.append({
                 "Day": date_str,
                 "Circle Time": f"Morning meeting, calendar, songs - {theme}",
                 "Gym": gym,
-                "Story Time": story_for_week or f"Read-aloud + discussion - {theme}",
+                "Story Time": story_for_week or f"Read-aloud - {theme}",
                 "Mighty Minutes": f"Mighty Minutes #{mm_numbers[i]}",
-                "Heggerty": "Daily 10-min phonemic awareness",
+                "Heggerty": "Daily Lesson",
                 "Math Lesson": math_act,
                 "Language Lesson": lang_act
-            }
-        rows.append(row_dict)
+            })
 
     df = pd.DataFrame(rows)
     st.dataframe(df, use_container_width=True, hide_index=True)
@@ -89,6 +94,7 @@ if st.sidebar.button("Generate Weekly Plan"):
 if st.session_state.get("plan_days") is not None:
     if st.button("📥 Download as Word Document"):
         doc = Document()
+        
         header_table = doc.add_table(rows=1, cols=2)
         header_table.cell(0, 0).text = "Hope Haven Preschool"
         header_table.cell(0, 1).text = "Mrs. Annette’s Class"
