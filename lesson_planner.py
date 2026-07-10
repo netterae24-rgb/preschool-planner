@@ -42,13 +42,12 @@ if st.sidebar.button("Generate Weekly Plan"):
         is_off = day in off_dates
         gym = "Ride tricycles" if day.weekday() == 2 else "Obstacle course / Ball skills"
 
-        # Intentional Teaching Experience codes
         math_it = f"Intentional Teaching Experience M-{random.randint(1,30)}"
         lang_it = f"Intentional Teaching Experience L-{random.randint(1,40)}"
 
         if is_off:
             rows.append({
-                "Day": f"{date_str} (NO SCHOOL)",
+                "Day": date_str,
                 "Circle Time": "NO SCHOOL",
                 "Gym": "NO SCHOOL",
                 "Story Time": "NO SCHOOL",
