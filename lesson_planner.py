@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 from docx import Document
-from docx.shared import Inches
 import io
 
 st.set_page_config(page_title="Preschool Lesson Planner", layout="wide")
@@ -84,4 +83,31 @@ if st.session_state.get("plan_days") is not None:
         header_table.cell(0, 1).text = "Mrs. Annette’s Class"
         
         doc.add_heading(f"Weekly Lesson Plan - {st.session_state.theme}", 0)
-        doc.add_paragraph(f"Week of: {st.session_state.plan_days[0].strftime('%m.%d.%Y')} to {st.session_state.plan
+        doc.add_paragraph(f"Week of: {st.session_state.plan_days[0].strftime('%m.%d.%Y')} to {st.session_state.plan_days[-1].strftime('%m.%d.%Y')}")
+        
+        # Main table
+        table = doc.add_table(rows=1, cols=7)
+        headers = ["Day", "Circle Time", "Gym", "Story Time", "Heggerty", "Math Lesson", "Language Lesson"]
+        for i, h in enumerate(headers):
+            table.cell(0, i).text = h
+        
+        for _, row in st.session_state.df.iterrows():
+            cells = table.add_row().cells
+            for i, val in enumerate(row):
+                cells[i].text = str(val)
+        
+        # Specials
+        doc.add_heading("Special Activities", level=1)
+        doc.add_paragraph(f"Weekly Art Project: {st.session_state.theme} themed activity")
+        doc.add_paragraph(f"Pocket of Preschool: {st.session_state.pocket_topic}")
+        
+        bio = io.BytesIO()
+        doc.save(bio)
+        bio.seek(0)
+        
+        st.download_button(
+            label="✅ Download .docx",
+            data=bio.getvalue(),
+            file_name=f"lesson_plan_{st.session_state.plan_days[0].strftime('%m.%d.%Y')}.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
