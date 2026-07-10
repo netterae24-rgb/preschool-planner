@@ -52,7 +52,7 @@ if st.sidebar.button("Generate Weekly Plan"):
                 "Gym": "NO SCHOOL",
                 "Story Time": "NO SCHOOL",
                 "Mighty Minutes": "NO SCHOOL",
-                "Heggerty": "Daily Lesson",
+                "Heggerty": "NO SCHOOL",
                 "Math Lesson": "NO SCHOOL",
                 "Language Lesson": "NO SCHOOL"
             })
@@ -80,7 +80,7 @@ if st.sidebar.button("Generate Weekly Plan"):
     st.session_state.theme = theme
     st.session_state.pocket_topic = pocket_topic
 
-# Download
+# Download (unchanged)
 if st.session_state.get("plan_days") is not None:
     if st.button("📥 Download as Word Document"):
         doc = Document()
